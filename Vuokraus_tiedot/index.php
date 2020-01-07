@@ -30,11 +30,9 @@
                                 exit();
                             }
 
-                            $date = date('Y-d-m');
-                            include_once './../database.php';
+                            require_once "./../database.php";
 
-                            $sql = "SELECT concat(a.etunimi, ' ', a.sukunimi) asiakkaanNimi, vi.nimi videonNimi, vi.nimi elokuvaNimi, a.asiakasid, vi.videoid, v.vuokrauspvm, v.palautuspvm FROM asiakas a, vuokraus v, elokuva vi WHERE a.asiakasid = v.asiakasID AND v.videoID = vi.videoid AND v.palautuspvm >= '" . $date . "' ORDER BY palautuspvm ASC";
-                            //$sql = "SELECT concat(a.etunimi, ' ', a.sukunimi) asiakkaanNimi, vi.nimi videonNimi, vi.nimi elokuvaNimi, a.asiakasid, vi.videoid, v.vuokrauspvm, v.palautuspvm FROM asiakas a, vuokraus v, vuokrausrivi vr, elokuva vi WHERE a.asiakasid = v.asiakasID AND v.vuokrausID = vr.vuokrausID AND vr.videoID = vi.videoid AND v.palautuspvm >= '" . $date . "' ORDER BY palautuspvm ASC";
+                            $sql = "SELECT concat(a.etunimi, ' ', a.sukunimi) asiakkaanNimi, vi.nimi elokuvanNimi, v.asiakasID asiakasID, vi.videoid videoID, v.vuokrauspvm, v.palautuspvm, v.kokonaishinta FROM asiakas a, elokuva vi, vuokraus v WHERE a.asiakasid = v.asiakasID AND vi.videoid = v.videoID AND v.palautuspvm ORDER BY palautuspvm ASC";
 
                             if($mysqli->set_charset("utf8")) {
                                 if($result = $mysqli->query($sql)) {
@@ -46,15 +44,17 @@
                                                     echo "<th>Elokuvan nimi:</th>";
                                                     echo "<th>Vuokrauspäivä:</th>";
                                                     echo "<th>Palautuspäivä:</th>";
+                                                    echo "<th>Kokonaishinta (€):</th>";
                                                 echo "</tr>";
                                             echo "</thead>";
                                             echo "<tbody>";
                                             while($row = $result->fetch_array()) {
                                                 echo "<tr>";
-                                                    echo "<td><a href='./../Asiakas_tiedot/pages/read_asiakas.php?asiakasid=". $row['asiakasid']. "'<span>" . $row['asiakkaanNimi'] . "</span></td>";
-                                                    echo "<td><a href='./../Video_tiedot/pages/read_video.php?videoid=". $row['videoid']. "'<span>" . $row['elokuvaNimi'] . "</span></td>";
+                                                    echo "<td><a href='./../Asiakas_tiedot/pages/read_asiakas.php?asiakasid=". $row['asiakasID']. "'<span>" . $row['asiakkaanNimi'] . "</span></td></a>";
+                                                    echo "<td><a href='./../Video_tiedot/pages/read_video.php?videoid=". $row['videoID']. "'<span>" . $row['elokuvanNimi'] . "</span></td></a>";
                                                     echo "<td>" . $row["vuokrauspvm"] . "</td>";
                                                     echo "<td>" . $row["palautuspvm"] . "</td>";
+                                                    echo "<td>" . $row["kokonaishinta"] . "</td>";
                                                 echo "</tr>";
                                             }
                                             echo "</tbody>";

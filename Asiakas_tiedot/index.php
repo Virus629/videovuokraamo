@@ -26,7 +26,7 @@
                             session_start();
 
                             if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-                                header("location: ../Myyja_tiedot/login.php");
+                                header("location: ./../Myyja_tiedot/login.php");
                                 exit();
                             }
 
